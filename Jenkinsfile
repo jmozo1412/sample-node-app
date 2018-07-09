@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         HAB_NOCOLORING = true
-        HAB_ORIGIN = 'bluepipeline'
+        HAB_ORIGIN = 'indellient'
     }
 
     stages {
