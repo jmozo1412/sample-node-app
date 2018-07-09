@@ -13,7 +13,7 @@ pipeline {
                 habitat task: 'build', directory: '.', origin: env.HAB_ORIGIN
                 withCredentials([string(credentialsId: 'depot-token', variable: 'HAB_AUTH_TOKEN')]) {
                     sh "ls ${workspace}/results"
-                    habitat task: 'upload', directory: "${workspace}/results", authToken: env.HAB_AUTH_TOKEN
+                    habitat task: 'upload', lastBuildFile: "${workspace}/results/last_build.env", authToken: env.HAB_AUTH_TOKEN
                 }
               }
             }
