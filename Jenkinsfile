@@ -6,28 +6,35 @@ pipeline {
         HAB_BLDR_URL = "https://bldr.habitat.sh"
     }
 
+    parameters {
+        string(
+            description: 'The Origin To build Package Under',
+            name:        'HAB_ORIGIN'
+        )
+    }
+
     stages {
         stage('download-keys') {
             steps {
-                sh "hab origin key download ${env.HAB_ORIGIN} --auth ${HAB_AUTH_TOKEN} --url ${env.HAB_BLDR_URL}"
-                sh "hab origin key download ${env.HAB_ORIGIN} --auth ${HAB_AUTH_TOKEN} --url ${env.HAB_BLDR_URL} --secret"
+                sh "hab origin key download ${HAB_ORIGIN} --auth ${HAB_AUTH_TOKEN} --url ${HAB_BLDR_URL}"
+                sh "hab origin key download ${HAB_ORIGIN} --auth ${HAB_AUTH_TOKEN} --url ${HAB_BLDR_URL} --secret"
             }
         }
         stage('build') {
             steps {
                 habitat task: 'build',
                         directory: '.',
-                        origin: env.HAB_ORIGIN,
-                        authToken: env.HAB_AUTH_TOKEN,
-                        bldrUrl: env.HAB_BLDR_URL
+                        origin: HAB_ORIGIN,
+                        authToken: HAB_AUTH_TOKEN,
+                        bldrUrl: HAB_BLDR_URL
             }
         }
         stage('upload') {
             steps {
                 habitat task: 'upload',
                         lastBuildFile: "${workspace}/results/last_build.env",
-                        authToken: env.HAB_AUTH_TOKEN,
-                        bldrUrl: env.HAB_BLDR_URL
+                        authToken: HAB_AUTH_TOKEN,
+                        bldrUrl: HAB_BLDR_URL
             }
         }
         stage('promote') {
@@ -35,8 +42,8 @@ pipeline {
                 habitat task: 'promote',
                         channel: 'stable',
                         lastBuildFile: "${workspace}/results/last_build.env",
-                        authToken: env.HAB_AUTH_TOKEN,
-                        bldrUrl: env.HAB_BLDR_URL
+                        authToken: HAB_AUTH_TOKEN,
+                        bldrUrl: HAB_BLDR_URL
             }
         }
     }
