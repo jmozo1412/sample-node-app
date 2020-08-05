@@ -2,8 +2,9 @@ pipeline {
     agent any
 
     environment {
+        HAB_LICENSE    = 'accept-no-persist'
         HAB_AUTH_TOKEN = credentials('hab-depot-token')
-        HAB_BLDR_URL = "https://bldr.habitat.sh"
+        HAB_BLDR_URL   = "https://bldr.habitat.sh"
     }
 
     parameters {
