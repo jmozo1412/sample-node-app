@@ -23,28 +23,17 @@ pipeline {
         }
         stage('build') {
             steps {
-                habitat task: 'build',
-                        directory: '.',
-                        origin: HAB_ORIGIN,
-                        authToken: HAB_AUTH_TOKEN,
-                        bldrUrl: HAB_BLDR_URL
+                sh "hab pkg build ."
             }
         }
         stage('upload') {
             steps {
-                habitat task: 'upload',
-                        lastBuildFile: "${workspace}/results/last_build.env",
-                        authToken: HAB_AUTH_TOKEN,
-                        bldrUrl: HAB_BLDR_URL
+                sh "source results/last_build.env && hab pkg upload results/\$pkg_artifact"
             }
         }
         stage('promote') {
             steps {
-                habitat task: 'promote',
-                        channel: 'stable',
-                        lastBuildFile: "${workspace}/results/last_build.env",
-                        authToken: HAB_AUTH_TOKEN,
-                        bldrUrl: HAB_BLDR_URL
+                sh "source results/last_build.env && hab pkg promote \$pkg_ident stable"
             }
         }
     }
